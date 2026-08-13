@@ -66,13 +66,13 @@ function getDisplayPairName(rowId, colId) {
 }
 
 const options = [
-    { name: "OTP",      color: "#fc5090" },
-    { name: "좋아함",   color: "#faa3c1" },
-    { name: "호감",     color: "#f6dc59" },
-    { name: "관심있음", color: "#97d477" },
+    { name: "OTP",      color: "#f7cde0" },
+    { name: "좋아함",   color: "#ffafaf" },
+    { name: "호감",     color: "#fcee90" },
+    { name: "관심있음", color: "#baebbb" },
     { name: "관심 X",   color: "#ffffff" },
-    { name: "별로",     color: "#90d7f3" },
-    { name: "지뢰",     color: "#818181" }
+    { name: "별로",     color: "#bfeefd" },
+    { name: "지뢰",     color: "#999999" }
 ];
 
 /* 사용자가 직접 고른 커스텀 색상 (name -> hex).
