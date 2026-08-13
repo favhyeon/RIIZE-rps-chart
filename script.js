@@ -723,7 +723,10 @@ resetBtn.addEventListener("click", () => {
 
     if (currentTab === "rps") {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(HIDDEN_KEY);
         saveData = {};
+        hiddenRows = new Set();
+        hiddenCols = new Set();
         historyStack = [];
         redoStack = [];
         updateNavButtons();
