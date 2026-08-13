@@ -83,7 +83,7 @@ body {
 
 .logo {
     display: block;
-    width: 500px;
+    width: 3400px;
     height: auto;
     margin: 0 auto 16px;
 }
@@ -128,7 +128,7 @@ h1 {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    max-width: 1220px;
+    max-width: 1000px;
     margin: 0 auto 8px;
 }
 
@@ -159,7 +159,7 @@ h1 {
 
 table {
     width: 100%;
-    max-width: 1220px;
+    max-width: 1000px;
     margin: 0 auto;
     border-collapse: collapse;
     table-layout: fixed;
@@ -177,7 +177,7 @@ th {
 }
 
 th:first-child {
-    width: 130px;
+    width: 110px;
 }
 
 .clickable-header {
@@ -753,7 +753,7 @@ button:hover {
     }
 
     .logo {
-        width: 160px;
+        width: 120px;
         margin: 0 auto 2px;
     }
 

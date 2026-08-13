@@ -172,7 +172,7 @@ let lrData = JSON.parse(localStorage.getItem(LR_STORAGE_KEY)) || {
 const GUIDE_TEXT = {
     rps: [
         "셀을 선택하여 호감도를 표시해주세요.",
-        "멤버 이름을 누르면 줄 전체선택이 가능해요."
+        "멤버 이름을 누르면 줄 전체선택/숨기기가 가능해요."
     ],
     lr: [
         "L-R 사이 원하는 부분의 칸을 선택하고, 아래 칸에 자유롭게 적어보세요.",
