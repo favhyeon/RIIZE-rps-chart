@@ -34,9 +34,9 @@ body {
 }
 
 .capture-area {
-    width: 1340px;
+    width: 1180px;
     margin: 0 auto;
-    padding: 34px 60px 34px;
+    padding: 34px 40px 34px;
     background: #fff;
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, .08);
