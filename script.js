@@ -6,56 +6,63 @@
    rowInitial: 이 멤버가 "행"일 때 커플명 앞에 오는 글자
    colInitial: 이 멤버가 "열"일 때 커플명 뒤에 오는 글자
    순서: 쇼타로, 은석, 성찬, 원빈, 승한(옵션), 소희, 앤톤 */
-const SEUNGHAN_ID = "seunghan";
+const HEESEUNG_ID = "seunghan";
 
 const MEMBERS_BASE = [
-    { id: "shotaro",  name: "쇼타로", rowInitial: "숕", colInitial: "숕", color: "#ffb733", photo: "assets/01_shotaro.png" },
-    { id: "eunseok",  name: "은석",   rowInitial: "돌", colInitial: "석", color: "#ff9900", photo: "assets/02_eunseok.png" },
-    { id: "sungchan", name: "성찬",   rowInitial: "숑", colInitial: "숑", color: "#e68a00", photo: "assets/03_sungchan.png" },
-    { id: "wonbin",   name: "원빈",   rowInitial: "넨", colInitial: "넨", color: "#ffae42", photo: "assets/04_wonbin.png" },
-    { id: SEUNGHAN_ID, name: "승한",  rowInitial: "슿", colInitial: "슿", color: "#bfbfbf", photo: "assets/07_seunghan.png" },
-    { id: "sohee",    name: "소희",   rowInitial: "히", colInitial: "또", color: "#cc7a00", photo: "assets/05_sohee.png" },
-    { id: "anton",    name: "앤톤",   rowInitial: "톤", colInitial: "톤", color: "#ffbf66", photo: "assets/06_anton.png" }
+    { id: "shotaro",   name: "숕타로", rowInitial: "숕", colInitial: "숕", color: "#fa9102", photo: "assets/01_shotaro.png" },
+    { id: "eunseok",   name: "은석",   rowInitial: "돌", colInitial: "돌", color: "#e07d00", photo: "assets/02_eunseok.png" },
+    { id: "sungchan",  name: "성찬",   rowInitial: "숑", colInitial: "숑", color: "#c96a00", photo: "assets/03_sungchan.png" },
+    { id: "wonbin",    name: "원빈",   rowInitial: "넨", colInitial: "넨", color: "#ffab33", photo: "assets/04_wonbin.png" },
+    { id: HEESEUNG_ID, name: "승한",   rowInitial: "슿", colInitial: "슿", color: "#bfbfbf", photo: "assets/07_seunghan.png" },
+    { id: "sohee",     name: "소희",   rowInitial: "또", colInitial: "또", color: "#ff7a1a", photo: "assets/05_sohee.png" },
+    { id: "anton",     name: "앤톤",   rowInitial: "톤", colInitial: "톤", color: "#d98c00", photo: "assets/06_anton.png" }
 ];
 
 const MEMBER_MAP = {};
 MEMBERS_BASE.forEach(m => { MEMBER_MAP[m.id] = m; });
 
-/* 승한(탈퇴 멤버) 포함 여부 - 체크박스로 켜고 끔 */
-const SEUNGHAN_KEY = "riize-include-seunghan";
-let includeSeunghan = localStorage.getItem(SEUNGHAN_KEY) === "1";
+/* 승한(옵션 멤버) 포함 여부 - 체크박스로 켜고 끔 */
+const HEESEUNG_KEY = "riize-include-seunghan";
+let includeHeeseung = localStorage.getItem(HEESEUNG_KEY) === "1";
+
+/* 본인조합명(대각선 칸의 씨피명) 표시 여부 - 체크박스로 켜고 끔
+   기본값은 켜짐(기존 동작과 동일)이라, 꺼본 적 없는 사용자는 "0"이 저장돼 있지 않다. */
+const SELF_PAIR_KEY = "riize-include-selfpair";
+let includeSelfPair = localStorage.getItem(SELF_PAIR_KEY) !== "0";
 
 function getActiveMembers() {
-    return MEMBERS_BASE.filter(m => m.id !== SEUNGHAN_ID || includeSeunghan);
+    return MEMBERS_BASE.filter(m => m.id !== HEESEUNG_ID || includeHeeseung);
 }
 
 /*
- * 6인(쇼타로/은석/성찬/원빈/소희/앤톤) 사이의 커플명은 실제 취향표를 그대로 옮긴 값.
- * 승한이 포함된 조합은 승한의 rowInitial/colInitial("슿")을 상대방과 자동으로 조합해서 만든다.
+ * 씨피명(커플명) 목록
+ * ------------------------------------------------------------
+ * [행 멤버][열 멤버] 형태로 모든 조합의 이름을 그대로 적어둔 표.
+ * 승한이 포함된 조합(슿으로 시작/끝나는 것들)도 전부 여기 있으니,
+ * 씨피명을 고치고 싶을 땐 해당 행 -> 해당 열 자리의 문자열만 바꾸면 된다.
+ * (예: 쇼타로×은석 자리를 바꾸고 싶으면 shotaro 줄의 eunseok: "숕섴" 부분만 수정)
  */
-const CORE_PAIR_NAMES = {
-    shotaro:  { shotaro: "숕숕", eunseok: "숕석", sungchan: "숕숑", wonbin: "숕넨", sohee: "숕또", anton: "숕톤" },
-    eunseok:  { shotaro: "돌숕", eunseok: "돌돌", sungchan: "은숑", wonbin: "돌넨", sohee: "석또", anton: "돌톤" },
-    sungchan: { shotaro: "숑숕", eunseok: "숑석", sungchan: "숑숑", wonbin: "숑넨", sohee: "숑또", anton: "숑톤" },
-    wonbin:   { shotaro: "넨숕", eunseok: "넨석", sungchan: "넨숑", wonbin: "넨넨", sohee: "넨또", anton: "넨톤" },
-    sohee:    { shotaro: "히숕", eunseok: "또석", sungchan: "히숑", wonbin: "히넨", sohee: "히히", anton: "또톤" },
-    anton:    { shotaro: "앤숕", eunseok: "톤석", sungchan: "톤숑", wonbin: "톤넨", sohee: "톤또", anton: "톤톤" }
+const PAIR_NAMES = {
+    shotaro:  { shotaro: "숕숕", eunseok: "숕석", sungchan: "숕숑", wonbin: "숕넨", seunghan: "숕슿", sohee: "숕또", anton: "숕톤" },
+    eunseok:  { shotaro: "돌숕", eunseok: "돌돌", sungchan: "은숑", wonbin: "돌넨", seunghan: "돌슿", sohee: "석또", anton: "돌톤" },
+    sungchan: { shotaro: "숑숕", eunseok: "숑석", sungchan: "숑숑", wonbin: "숑넨", seunghan: "숑슿", sohee: "숑또", anton: "숑톤" },
+    wonbin:   { shotaro: "넨숕", eunseok: "넨석", sungchan: "넨숑", wonbin: "넨넨", seunghan: "넨슿", sohee: "넨또", anton: "넨톤" },
+    seunghan: { shotaro: "슿숕", eunseok: "슿석", sungchan: "슿숑", wonbin: "슿넨", seunghan: "슿슿", sohee: "슿또", anton: "슿톤" },
+    sohee:    { shotaro: "히숕", eunseok: "또석", sungchan: "히숑", wonbin: "히넨", seunghan: "히슿", sohee: "또또", anton: "또톤" },
+    anton:    { shotaro: "앤숕", eunseok: "톤석", sungchan: "톤숑", wonbin: "톤넨", seunghan: "톤슿", sohee: "톤또", anton: "톤톤" }
 };
 
 function getPairName(rowId, colId) {
-    if (rowId !== SEUNGHAN_ID && colId !== SEUNGHAN_ID) {
-        return CORE_PAIR_NAMES[rowId][colId];
-    }
+    return PAIR_NAMES[rowId][colId];
+}
 
-    if (rowId === colId) {
-        return MEMBER_MAP[SEUNGHAN_ID].rowInitial + MEMBER_MAP[SEUNGHAN_ID].colInitial;
+/* 본인조합(대각선 칸: 제이×제이, 니키×니키 등)의 이름을 표시할지 여부에 따라
+   실제로 화면/이미지에 그릴 텍스트를 반환한다. 토글이 꺼져 있으면 "-"를 보여준다. */
+function getDisplayPairName(rowId, colId) {
+    if (rowId === colId && !includeSelfPair) {
+        return "-";
     }
-
-    if (rowId === SEUNGHAN_ID) {
-        return MEMBER_MAP[SEUNGHAN_ID].rowInitial + MEMBER_MAP[colId].colInitial;
-    }
-
-    return MEMBER_MAP[rowId].rowInitial + MEMBER_MAP[SEUNGHAN_ID].colInitial;
+    return getPairName(rowId, colId);
 }
 
 const options = [
@@ -88,7 +95,7 @@ function resetCustomColors() {
     localStorage.removeItem(CUSTOM_COLOR_KEY);
 }
 
-const STORAGE_KEY = "riize-rat-rps";
+const STORAGE_KEY = "riize-yeop-rps";
 const LR_STORAGE_KEY = "riize-lr-rps";
 const LR_CELL_COUNT = 12;
 
@@ -122,7 +129,8 @@ const dateToggleWrap = document.getElementById("dateToggleWrap");
 const dateToggle = document.getElementById("dateToggle");
 const dateTextRps = document.getElementById("dateTextRps");
 const dateTextLr = document.getElementById("dateTextLr");
-const seunghanToggle = document.getElementById("seunghanToggle");
+const heeseungToggle = document.getElementById("heeseungToggle");
+const selfPairToggle = document.getElementById("selfPairToggle");
 
 const undoBtn = document.getElementById("undoBtn");
 const redoBtn = document.getElementById("redoBtn");
@@ -142,11 +150,11 @@ const scaleWrap = document.getElementById("scaleWrap");
 /* CSS의 @media (max-width: 768px)과 동일한 기준.
    이 폭 이하에서는 JS로 축소하지 않고, 반응형 레이아웃을 그대로 사용한다. */
 const MOBILE_BREAKPOINT = 768;
-const DESKTOP_CAPTURE_WIDTH = 1600;
+const DESKTOP_CAPTURE_WIDTH = 1340;
 
-let currentTarget = null; // { type: "cell", td, rowId, colId } | { type: "row", id } | { type: "col", id }
+let currentTarget = null; // { type: "cell", td } | { type: "row", index } | { type: "col", index }
 let currentTab = "rps";
-let currentPhotoId = null;
+let currentPhotoIndex = null;
 let currentBlobUrl = null; // 저장 미리보기/다운로드에 쓰이는 Blob URL (재사용 전 해제)
 
 const HISTORY_LIMIT = 50;
@@ -223,14 +231,28 @@ dateToggle.addEventListener("change", updateDateDisplay);
    승한 포함(7인) 토글
 ========================================== */
 
-if (seunghanToggle) {
-    seunghanToggle.checked = includeSeunghan;
+if (heeseungToggle) {
+    heeseungToggle.checked = includeHeeseung;
 
-    seunghanToggle.addEventListener("change", () => {
-        includeSeunghan = seunghanToggle.checked;
-        localStorage.setItem(SEUNGHAN_KEY, includeSeunghan ? "1" : "0");
+    heeseungToggle.addEventListener("change", () => {
+        includeHeeseung = heeseungToggle.checked;
+        localStorage.setItem(HEESEUNG_KEY, includeHeeseung ? "1" : "0");
         createTable();
         createLrGrid();
+    });
+}
+
+/* ==========================================
+   본인조합명 표시 토글
+========================================== */
+
+if (selfPairToggle) {
+    selfPairToggle.checked = includeSelfPair;
+
+    selfPairToggle.addEventListener("change", () => {
+        includeSelfPair = selfPairToggle.checked;
+        localStorage.setItem(SELF_PAIR_KEY, includeSelfPair ? "1" : "0");
+        createTable();
     });
 }
 
@@ -317,7 +339,7 @@ function createTable() {
             const key = `${rowMember.id}-${colMember.id}`;
             td.dataset.key = key;
 
-            td.textContent = getPairName(rowMember.id, colMember.id);
+            td.textContent = getDisplayPairName(rowMember.id, colMember.id);
 
             if (rowMember.id === colMember.id) {
                 td.classList.add("diagonal");
@@ -329,7 +351,7 @@ function createTable() {
 
             td.addEventListener("click", () => {
                 currentTarget = { type: "cell", td, rowId: rowMember.id, colId: colMember.id };
-                openModal(getPairName(rowMember.id, colMember.id));
+                openModal(getDisplayPairName(rowMember.id, colMember.id));
             });
 
             tr.appendChild(td);
@@ -570,8 +592,7 @@ function createLrGrid() {
     const activeMembers = getActiveMembers();
 
     /* 왼쪽 열에 앞쪽 절반(반올림)이 채워지도록 행 개수를 정한다.
-       6인이면 3-3, 7인(승한 포함)이면 4-3으로 원빈까지 왼쪽,
-       승한부터 앤톤까지 오른쪽에 배치된다. */
+       6인이면 3-3, 7인(승한 포함)이면 4-3으로 순서가 그대로 유지된다. */
     lrGrid.style.setProperty("--lr-rows", Math.ceil(activeMembers.length / 2));
 
     activeMembers.forEach(member => {
@@ -600,7 +621,7 @@ function createLrGrid() {
         avatar.appendChild(editHint);
 
         avatar.addEventListener("click", () => {
-            currentPhotoId = index;
+            currentPhotoIndex = index;
             photoInput.value = "";
             photoInput.click();
         });
@@ -699,15 +720,15 @@ function saveLrData() {
 /* 사진 업로드 */
 photoInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (!file || currentPhotoId === null) return;
+    if (!file || currentPhotoIndex === null) return;
 
     const reader = new FileReader();
 
     reader.onload = () => {
-        lrData.photos[currentPhotoId] = reader.result;
+        lrData.photos[currentPhotoIndex] = reader.result;
         saveLrData();
 
-        const avatarEl = lrGrid.querySelector(`.lr-avatar[data-index="${currentPhotoId}"] img`);
+        const avatarEl = lrGrid.querySelector(`.lr-avatar[data-index="${currentPhotoIndex}"] img`);
         if (avatarEl) {
             avatarEl.src = reader.result;
         }
@@ -788,7 +809,7 @@ saveBtn.addEventListener("click", async () => {
     area.classList.add("capturing");
 
     /* 화면(특히 모바일)에 적용돼 있던 축소/반응형 스타일을 잠시 걷어내고,
-       항상 PC 버전과 동일한 1600px 레이아웃으로 저장되도록 한다. */
+       항상 PC 버전과 동일한 1340px 레이아웃으로 저장되도록 한다. */
     const prevTransform = area.style.transform;
     area.style.transform = "none";
 
