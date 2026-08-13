@@ -9,7 +9,7 @@
 const HEESEUNG_ID = "seunghan";
 
 const MEMBERS_BASE = [
-    { id: "shotaro",   name: "쇼타로 ", rowInitial: "숕", colInitial: "숕", color: "#fa9102", photo: "assets/01_shotaro.png" },
+    { id: "shotaro",   name: "쇼타로", rowInitial: "숕", colInitial: "숕", color: "#fa9102", photo: "assets/01_shotaro.png" },
     { id: "eunseok",   name: "은석",   rowInitial: "돌", colInitial: "돌", color: "#e07d00", photo: "assets/02_eunseok.png" },
     { id: "sungchan",  name: "성찬",   rowInitial: "숑", colInitial: "숑", color: "#c96a00", photo: "assets/03_sungchan.png" },
     { id: "wonbin",    name: "원빈",   rowInitial: "넨", colInitial: "넨", color: "#ffab33", photo: "assets/04_wonbin.png" },
