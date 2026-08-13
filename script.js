@@ -9,9 +9,9 @@
 const SEUNGHAN_ID = "seunghan";
 
 const MEMBERS_BASE = [
-    { id: "shotaro",  name: "쇼타로", rowInitial: "숕", colInitial: "솥", color: "#ffb733", photo: "assets/01_shotaro.png" },
+    { id: "shotaro",  name: "쇼타로", rowInitial: "숕", colInitial: "숕", color: "#ffb733", photo: "assets/01_shotaro.png" },
     { id: "eunseok",  name: "은석",   rowInitial: "돌", colInitial: "석", color: "#ff9900", photo: "assets/02_eunseok.png" },
-    { id: "sungchan", name: "성찬",   rowInitial: "송", colInitial: "송", color: "#e68a00", photo: "assets/03_sungchan.png" },
+    { id: "sungchan", name: "성찬",   rowInitial: "숑", colInitial: "숑", color: "#e68a00", photo: "assets/03_sungchan.png" },
     { id: "wonbin",   name: "원빈",   rowInitial: "넨", colInitial: "넨", color: "#ffae42", photo: "assets/04_wonbin.png" },
     { id: SEUNGHAN_ID, name: "승한",  rowInitial: "슿", colInitial: "슿", color: "#bfbfbf", photo: "assets/07_seunghan.png" },
     { id: "sohee",    name: "소희",   rowInitial: "히", colInitial: "또", color: "#cc7a00", photo: "assets/05_sohee.png" },
@@ -34,12 +34,12 @@ function getActiveMembers() {
  * 승한이 포함된 조합은 승한의 rowInitial/colInitial("슿")을 상대방과 자동으로 조합해서 만든다.
  */
 const CORE_PAIR_NAMES = {
-    shotaro:  { shotaro: "♡",   eunseok: "숕석", sungchan: "숕송", wonbin: "숕넨", sohee: "숕또", anton: "숕톤" },
-    eunseok:  { shotaro: "돌솥", eunseok: "♡",   sungchan: "은송", wonbin: "돌넨", sohee: "석또", anton: "돌톤" },
-    sungchan: { shotaro: "송솥", eunseok: "송석", sungchan: "♡",   wonbin: "송넨", sohee: "송또", anton: "송톤" },
-    wonbin:   { shotaro: "넨솥", eunseok: "넨석", sungchan: "넨송", wonbin: "♡",   sohee: "넨또", anton: "넨톤" },
-    sohee:    { shotaro: "히솥", eunseok: "또석", sungchan: "히송", wonbin: "히넨", sohee: "♡",   anton: "또톤" },
-    anton:    { shotaro: "앤솥", eunseok: "톤석", sungchan: "톤송", wonbin: "톤넨", sohee: "톤또", anton: "♡" }
+    shotaro:  { shotaro: "숕숕", eunseok: "숕석", sungchan: "숕숑", wonbin: "숕넨", sohee: "숕또", anton: "숕톤" },
+    eunseok:  { shotaro: "돌숕", eunseok: "돌석", sungchan: "은숑", wonbin: "돌넨", sohee: "석또", anton: "돌톤" },
+    sungchan: { shotaro: "숑숕", eunseok: "숑석", sungchan: "숑숑", wonbin: "숑넨", sohee: "숑또", anton: "숑톤" },
+    wonbin:   { shotaro: "넨숕", eunseok: "넨석", sungchan: "넨숑", wonbin: "넨넨", sohee: "넨또", anton: "넨톤" },
+    sohee:    { shotaro: "히숕", eunseok: "또석", sungchan: "히숑", wonbin: "히넨", sohee: "또또", anton: "또톤" },
+    anton:    { shotaro: "앤숕", eunseok: "톤석", sungchan: "톤숑", wonbin: "톤넨", sohee: "톤또", anton: "톤톤" }
 };
 
 function getPairName(rowId, colId) {
