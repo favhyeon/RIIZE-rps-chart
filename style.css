@@ -244,7 +244,7 @@ td:hover {
 .lr-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(var(--lr-rows, 3), auto);
     grid-auto-flow: column;
     gap: 46px 50px;
 }
@@ -454,6 +454,9 @@ button:hover {
 .date-toggle-wrap {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 22px;
     margin-top: 20px;
 }
 
@@ -642,6 +645,32 @@ button:hover {
 
 .reset-colors-link:hover {
     color: #ffa500;
+}
+
+.modal-extra {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.hide-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    cursor: pointer;
+    user-select: none;
+}
+
+.hide-toggle input {
+    width: 16px;
+    height: 16px;
+    accent-color: #ffa500;
+    cursor: pointer;
 }
 
 .clear-card .option-dot {

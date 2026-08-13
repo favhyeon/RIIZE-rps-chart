@@ -2,47 +2,59 @@
    RIIZE 취향표
 ========================================== */
 
-const members = [
-    "쇼타로",
-    "은석",
-    "성찬",
-    "원빈",
-    "소희",
-    "앤톤"
+/* 멤버 정보 (id / 이름 / 행-이니셜 / 열-이니셜 / 기본색 / 기본사진)
+   rowInitial: 이 멤버가 "행"일 때 커플명 앞에 오는 글자
+   colInitial: 이 멤버가 "열"일 때 커플명 뒤에 오는 글자
+   순서: 쇼타로, 은석, 성찬, 원빈, 승한(옵션), 소희, 앤톤 */
+const SEUNGHAN_ID = "seunghan";
+
+const MEMBERS_BASE = [
+    { id: "shotaro",  name: "쇼타로", rowInitial: "숕", colInitial: "솥", color: "#ffb733", photo: "assets/01_shotaro.png" },
+    { id: "eunseok",  name: "은석",   rowInitial: "돌", colInitial: "석", color: "#ff9900", photo: "assets/02_eunseok.png" },
+    { id: "sungchan", name: "성찬",   rowInitial: "송", colInitial: "송", color: "#e68a00", photo: "assets/03_sungchan.png" },
+    { id: "wonbin",   name: "원빈",   rowInitial: "넨", colInitial: "넨", color: "#ffae42", photo: "assets/04_wonbin.png" },
+    { id: SEUNGHAN_ID, name: "승한",  rowInitial: "슿", colInitial: "슿", color: "#bfbfbf", photo: "assets/07_seunghan.png" },
+    { id: "sohee",    name: "소희",   rowInitial: "히", colInitial: "또", color: "#cc7a00", photo: "assets/05_sohee.png" },
+    { id: "anton",    name: "앤톤",   rowInitial: "톤", colInitial: "톤", color: "#ffbf66", photo: "assets/06_anton.png" }
 ];
 
-/* 멤버별 기본 아바타 색상 (사진 로드 실패 시 대체용) */
-const memberColors = [
-    "#ffb733",
-    "#ff9900",
-    "#e68a00",
-    "#ffae42",
-    "#cc7a00",
-    "#ffbf66"
-];
+const MEMBER_MAP = {};
+MEMBERS_BASE.forEach(m => { MEMBER_MAP[m.id] = m; });
 
-/* 멤버별 기본 프로필 사진 (members 배열과 순서 동일) */
-const defaultPhotos = [
-    "assets/01_shotaro.png",
-    "assets/02_eunseok.png",
-    "assets/03_sungchan.png",
-    "assets/04_wonbin.png",
-    "assets/05_sohee.png",
-    "assets/06_anton.png"
-];
+/* 승한(탈퇴 멤버) 포함 여부 - 체크박스로 켜고 끔 */
+const SEUNGHAN_KEY = "riize-include-seunghan";
+let includeSeunghan = localStorage.getItem(SEUNGHAN_KEY) === "1";
+
+function getActiveMembers() {
+    return MEMBERS_BASE.filter(m => m.id !== SEUNGHAN_ID || includeSeunghan);
+}
 
 /*
- * 표에 표시할 커플명. [행 멤버][열 멤버] 순서.
- * 멤버 순서: 쇼타로, 은석, 성찬, 원빈, 소희, 앤톤
+ * 6인(쇼타로/은석/성찬/원빈/소희/앤톤) 사이의 커플명은 실제 취향표를 그대로 옮긴 값.
+ * 승한이 포함된 조합은 승한의 rowInitial/colInitial("슿")을 상대방과 자동으로 조합해서 만든다.
  */
-const pairNames = [
-    ["숕숕", "숕석", "숕숑", "숕넨", "숕또", "숕톤"],
-    ["돌숕", "돌석", "은숑", "돌넨", "석또", "돌톤"],
-    ["숑숕", "숑석", "숑숑", "숑넨", "숑또", "숑톤"],
-    ["넨숕", "넨석", "넨숑", "넨넨", "넨또", "넨톤"],
-    ["히숕", "또석", "히숑", "히넨", "또또", "또톤"],
-    ["앤숕", "톤석", "톤숑", "톤넨", "톤또", "톤톤"]
-];
+const CORE_PAIR_NAMES = {
+    shotaro:  { shotaro: "♡",   eunseok: "숕석", sungchan: "숕송", wonbin: "숕넨", sohee: "숕또", anton: "숕톤" },
+    eunseok:  { shotaro: "돌솥", eunseok: "♡",   sungchan: "은송", wonbin: "돌넨", sohee: "석또", anton: "돌톤" },
+    sungchan: { shotaro: "송솥", eunseok: "송석", sungchan: "♡",   wonbin: "송넨", sohee: "송또", anton: "송톤" },
+    wonbin:   { shotaro: "넨솥", eunseok: "넨석", sungchan: "넨송", wonbin: "♡",   sohee: "넨또", anton: "넨톤" },
+    sohee:    { shotaro: "히솥", eunseok: "또석", sungchan: "히송", wonbin: "히넨", sohee: "♡",   anton: "또톤" },
+    anton:    { shotaro: "앤솥", eunseok: "톤석", sungchan: "톤송", wonbin: "톤넨", sohee: "톤또", anton: "♡" }
+};
+
+function getPairName(rowId, colId) {
+    if (rowId === colId) return "♡";
+
+    if (rowId !== SEUNGHAN_ID && colId !== SEUNGHAN_ID) {
+        return CORE_PAIR_NAMES[rowId][colId];
+    }
+
+    if (rowId === SEUNGHAN_ID) {
+        return MEMBER_MAP[SEUNGHAN_ID].rowInitial + MEMBER_MAP[colId].colInitial;
+    }
+
+    return MEMBER_MAP[rowId].rowInitial + MEMBER_MAP[SEUNGHAN_ID].colInitial;
+}
 
 const options = [
     { name: "OTP",      color: "#fc5090" },
@@ -78,10 +90,24 @@ const STORAGE_KEY = "riize-rat-rps";
 const LR_STORAGE_KEY = "riize-lr-rps";
 const LR_CELL_COUNT = 12;
 
+/* 행/열 개별 숨기기 상태 (멤버 id 기준, rows/cols 따로 관리) */
+const HIDDEN_KEY = "riize-hidden-members";
+const hiddenSaved = JSON.parse(localStorage.getItem(HIDDEN_KEY)) || { rows: [], cols: [] };
+let hiddenRows = new Set(hiddenSaved.rows);
+let hiddenCols = new Set(hiddenSaved.cols);
+
+function saveHiddenState() {
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify({
+        rows: [...hiddenRows],
+        cols: [...hiddenCols]
+    }));
+}
+
 const table = document.getElementById("chartTable");
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
 const optionGrid = document.getElementById("optionGrid");
+const modalExtra = document.getElementById("modalExtra");
 const closeModal = document.getElementById("closeModal");
 
 const saveBtn = document.getElementById("saveBtn");
@@ -94,6 +120,7 @@ const dateToggleWrap = document.getElementById("dateToggleWrap");
 const dateToggle = document.getElementById("dateToggle");
 const dateTextRps = document.getElementById("dateTextRps");
 const dateTextLr = document.getElementById("dateTextLr");
+const seunghanToggle = document.getElementById("seunghanToggle");
 
 const undoBtn = document.getElementById("undoBtn");
 const redoBtn = document.getElementById("redoBtn");
@@ -115,9 +142,9 @@ const scaleWrap = document.getElementById("scaleWrap");
 const MOBILE_BREAKPOINT = 768;
 const DESKTOP_CAPTURE_WIDTH = 1600;
 
-let currentTarget = null; // { type: "cell", td } | { type: "row", index } | { type: "col", index }
+let currentTarget = null; // { type: "cell", td, rowId, colId } | { type: "row", id } | { type: "col", id }
 let currentTab = "rps";
-let currentPhotoIndex = null;
+let currentPhotoId = null;
 let currentBlobUrl = null; // 저장 미리보기/다운로드에 쓰이는 Blob URL (재사용 전 해제)
 
 const HISTORY_LIMIT = 50;
@@ -190,6 +217,21 @@ function updateDateDisplay() {
 
 dateToggle.addEventListener("change", updateDateDisplay);
 
+/* ==========================================
+   승한 포함(7인) 토글
+========================================== */
+
+if (seunghanToggle) {
+    seunghanToggle.checked = includeSeunghan;
+
+    seunghanToggle.addEventListener("change", () => {
+        includeSeunghan = seunghanToggle.checked;
+        localStorage.setItem(SEUNGHAN_KEY, includeSeunghan ? "1" : "0");
+        createTable();
+        createLrGrid();
+    });
+}
+
 createTable();
 createLrGrid();
 updateNavButtons();
@@ -230,19 +272,23 @@ tabLr.addEventListener("click", () => switchTab("lr"));
 function createTable() {
     table.innerHTML = "";
 
+    const activeMembers = getActiveMembers();
+    const visibleCols = activeMembers.filter(m => !hiddenCols.has(m.id));
+    const visibleRows = activeMembers.filter(m => !hiddenRows.has(m.id));
+
     const head = document.createElement("tr");
     const empty = document.createElement("th");
     empty.className = "corner";
     head.appendChild(empty);
 
-    members.forEach((member, colIndex) => {
+    visibleCols.forEach(member => {
         const th = document.createElement("th");
-        th.textContent = member;
+        th.textContent = member.name;
         th.classList.add("clickable-header");
 
         th.addEventListener("click", () => {
-            currentTarget = { type: "col", index: colIndex };
-            openModal(member);
+            currentTarget = { type: "col", id: member.id };
+            openModal(member.name);
         });
 
         head.appendChild(th);
@@ -250,37 +296,38 @@ function createTable() {
 
     table.appendChild(head);
 
-    members.forEach((row, rowIndex) => {
+    visibleRows.forEach(rowMember => {
         const tr = document.createElement("tr");
 
         const rowHead = document.createElement("th");
-        rowHead.textContent = row;
+        rowHead.textContent = rowMember.name;
         rowHead.classList.add("clickable-header");
 
         rowHead.addEventListener("click", () => {
-            currentTarget = { type: "row", index: rowIndex };
-            openModal(row);
+            currentTarget = { type: "row", id: rowMember.id };
+            openModal(rowMember.name);
         });
 
         tr.appendChild(rowHead);
 
-        members.forEach((col, colIndex) => {
+        visibleCols.forEach(colMember => {
             const td = document.createElement("td");
-            td.dataset.key = `${rowIndex}-${colIndex}`;
+            const key = `${rowMember.id}-${colMember.id}`;
+            td.dataset.key = key;
 
-            td.textContent = pairNames[rowIndex][colIndex];
+            td.textContent = getPairName(rowMember.id, colMember.id);
 
-            if (rowIndex === colIndex) {
+            if (rowMember.id === colMember.id) {
                 td.classList.add("diagonal");
             }
 
-            if (saveData[td.dataset.key]) {
-                td.style.backgroundColor = saveData[td.dataset.key];
+            if (saveData[key]) {
+                td.style.backgroundColor = saveData[key];
             }
 
             td.addEventListener("click", () => {
-                currentTarget = { type: "cell", td };
-                openModal(pairNames[rowIndex][colIndex]);
+                currentTarget = { type: "cell", td, rowId: rowMember.id, colId: colMember.id };
+                openModal(getPairName(rowMember.id, colMember.id));
             });
 
             tr.appendChild(td);
@@ -385,33 +432,68 @@ function openModal(titleText) {
     clearItem.addEventListener("click", () => applySelection(null));
     optionGrid.appendChild(clearItem);
 
-    modal.classList.remove("hidden");
+    renderModalExtra(titleText);
 
-    // 색상 전체 초기화 링크
-    let resetLink = document.getElementById("resetColorsLink");
-    if (!resetLink) {
-        resetLink = document.createElement("div");
-        resetLink.id = "resetColorsLink";
-        resetLink.className = "reset-colors-link";
-        resetLink.textContent = "색상 기본값으로 되돌리기";
-        resetLink.addEventListener("click", () => {
-            resetCustomColors();
-            renderLegend();
-            openModal(titleText);
-        });
-        optionGrid.insertAdjacentElement("afterend", resetLink);
-    }
+    modal.classList.remove("hidden");
 }
 
-function setCellColor(td, color) {
-    if (!td) return;
+/* 모달 하단(색상 기본값 되돌리기 + 행/열 숨기기 체크박스) 영역.
+   모달을 열 때마다 currentTarget 기준으로 다시 그린다. */
+function renderModalExtra(titleText) {
+    if (!modalExtra) return;
+    modalExtra.innerHTML = "";
 
+    const resetLink = document.createElement("div");
+    resetLink.className = "reset-colors-link";
+    resetLink.textContent = "색상 기본값으로 되돌리기";
+    resetLink.addEventListener("click", () => {
+        resetCustomColors();
+        renderLegend();
+        openModal(titleText);
+    });
+    modalExtra.appendChild(resetLink);
+
+    if (!currentTarget || (currentTarget.type !== "row" && currentTarget.type !== "col")) {
+        return;
+    }
+
+    const member = MEMBER_MAP[currentTarget.id];
+    const isRow = currentTarget.type === "row";
+    const initial = isRow ? member.rowInitial : member.colInitial;
+    const suffix = isRow ? "왼" : "른";
+    const hiddenSet = isRow ? hiddenRows : hiddenCols;
+
+    const hideLabel = document.createElement("label");
+    hideLabel.className = "hide-toggle";
+
+    const hideInput = document.createElement("input");
+    hideInput.type = "checkbox";
+    hideInput.checked = hiddenSet.has(member.id);
+
+    hideInput.addEventListener("change", () => {
+        if (hideInput.checked) {
+            hiddenSet.add(member.id);
+        } else {
+            hiddenSet.delete(member.id);
+        }
+        saveHiddenState();
+        createTable();
+        modal.classList.add("hidden");
+    });
+
+    hideLabel.appendChild(hideInput);
+    hideLabel.appendChild(document.createTextNode(`${initial}${suffix} 숨기기`));
+
+    modalExtra.appendChild(hideLabel);
+}
+
+function setCellColor(td, key, color) {
     if (color) {
-        td.style.backgroundColor = color;
-        saveData[td.dataset.key] = color;
+        if (td) td.style.backgroundColor = color;
+        saveData[key] = color;
     } else {
-        td.style.backgroundColor = "#ffffff";
-        delete saveData[td.dataset.key];
+        if (td) td.style.backgroundColor = "#ffffff";
+        delete saveData[key];
     }
 }
 
@@ -420,19 +502,24 @@ function applySelection(color) {
 
     pushHistory();
 
+    const activeMembers = getActiveMembers();
+
     if (currentTarget.type === "cell") {
-        setCellColor(currentTarget.td, color);
+        const key = `${currentTarget.rowId}-${currentTarget.colId}`;
+        setCellColor(currentTarget.td, key, color);
     } else if (currentTarget.type === "row") {
-        const rowIndex = currentTarget.index;
-        members.forEach((_, colIndex) => {
-            const td = table.querySelector(`td[data-key="${rowIndex}-${colIndex}"]`);
-            setCellColor(td, color);
+        const rowId = currentTarget.id;
+        activeMembers.forEach(colMember => {
+            const key = `${rowId}-${colMember.id}`;
+            const td = table.querySelector(`td[data-key="${key}"]`);
+            setCellColor(td, key, color);
         });
     } else if (currentTarget.type === "col") {
-        const colIndex = currentTarget.index;
-        members.forEach((_, rowIndex) => {
-            const td = table.querySelector(`td[data-key="${rowIndex}-${colIndex}"]`);
-            setCellColor(td, color);
+        const colId = currentTarget.id;
+        activeMembers.forEach(rowMember => {
+            const key = `${rowMember.id}-${colId}`;
+            const td = table.querySelector(`td[data-key="${key}"]`);
+            setCellColor(td, key, color);
         });
     }
 
@@ -478,7 +565,16 @@ function defaultAvatar(name, color) {
 function createLrGrid() {
     lrGrid.innerHTML = "";
 
-    members.forEach((member, index) => {
+    const activeMembers = getActiveMembers();
+
+    /* 왼쪽 열에 앞쪽 절반(반올림)이 채워지도록 행 개수를 정한다.
+       6인이면 3-3, 7인(승한 포함)이면 4-3으로 원빈까지 왼쪽,
+       승한부터 앤톤까지 오른쪽에 배치된다. */
+    lrGrid.style.setProperty("--lr-rows", Math.ceil(activeMembers.length / 2));
+
+    activeMembers.forEach(member => {
+        const index = member.id;
+
         const row = document.createElement("div");
         row.className = "lr-row";
 
@@ -488,11 +584,11 @@ function createLrGrid() {
         avatar.dataset.index = index;
 
         const img = document.createElement("img");
-        img.src = lrData.photos[index] || defaultPhotos[index];
-        img.alt = member;
+        img.src = lrData.photos[index] || member.photo;
+        img.alt = member.name;
         img.onerror = () => {
             img.onerror = null;
-            img.src = defaultAvatar(member, memberColors[index % memberColors.length]);
+            img.src = defaultAvatar(member.name, member.color);
         };
         avatar.appendChild(img);
 
@@ -502,7 +598,7 @@ function createLrGrid() {
         avatar.appendChild(editHint);
 
         avatar.addEventListener("click", () => {
-            currentPhotoIndex = index;
+            currentPhotoId = index;
             photoInput.value = "";
             photoInput.click();
         });
@@ -601,15 +697,15 @@ function saveLrData() {
 /* 사진 업로드 */
 photoInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (!file || currentPhotoIndex === null) return;
+    if (!file || currentPhotoId === null) return;
 
     const reader = new FileReader();
 
     reader.onload = () => {
-        lrData.photos[currentPhotoIndex] = reader.result;
+        lrData.photos[currentPhotoId] = reader.result;
         saveLrData();
 
-        const avatarEl = lrGrid.querySelector(`.lr-avatar[data-index="${currentPhotoIndex}"] img`);
+        const avatarEl = lrGrid.querySelector(`.lr-avatar[data-index="${currentPhotoId}"] img`);
         if (avatarEl) {
             avatarEl.src = reader.result;
         }
